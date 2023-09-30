@@ -1,0 +1,50 @@
+These step-by-step instructions will allow you to create a routable map image (IMG) file compatible with Garmin GPS navigators from OpenStreetMap geospatial data, "the map of the world that anyone can use for free" (copyright OpenStreetMap and contributors, www.openstreetmap.org). 
+
+How to generate a custom routable Garmin-compatible map for your GPS navigator:
+
+Before starting, buy a microSD card if you don't already own one, for the microSD slot in your Garmin GPS. If you do not have an adapter for connecting a microSD card to a USB port on your computer, get one of those, too.
+
+1. plug the thumbdrive this document is on into a free USB port on your computer
+2. copy the OSM folder on this thumbdrive to your desktop (this will copy all the subfolders and files, too)
+3. download a PBF file containing the geospatial data you want from either https://extract.bbbike.org/ or https://download.geofabrik.de/ and place it in the OSM folder
+4. edit the Java scripts below so that <filename> is the same as what you downloaded (or rename the PBF file to something easy to type and replace <filename> with that. Both file names must end in .pbf)
+5. install Java on your computer if you do not already have it installed
+6. open the command line, and type in cd .\Desktop\OSM (on some Windows machines with OneDrive installed and running, this will be cd .\OneDrive\Desktop\OSM)
+7. copy and paste the first Java script below (splitter) to the command line and run it. When it finishes running, do the same with the second script (mkgmap) below.
+
+(two separate routines are offered, one for the four Central Asian states without Kazakhstan, the other for Kazakhstan alone, because bbbike limits how large a download can be)
+
+for Central Asia except Kazakhstan:
+
+java.exe -Xmx4000m -jar splitter\splitter.jar --output-dir=split --description=Central_Asia --overlap=4000 --keep-complete=true --mapid=12340001 <filename>
+
+java.exe -Xmx4096m -jar mkgmap\mkgmap.jar --copyright-message="Copyright OpenStreetMap and contributors" --output-dir=map --route --index --split-name-index --location-autofill=is_in,nearest  --preserve-element-order --style-file=.\tstan  --add-pois-to-areas --link-pois-to-ways --nearby-poi-rules-config=.\tstan\duppoi --unicode --housenumbers --road-name-pois  --process-exits --process-destination --split-name-index --add-boundary-nodes-at-admin-boundaries=2 --housenumbers --poi-address  --bounds=bounds-latest.zip  --precomp-sea=sea-latest.zip --generate-sea --country-name="Central_Asia" --family-id=1234 --family-name=Central_Asia --series-name=Central_Asia --area-name=Central_Asia --gmapi --gmapsupp -c split\template.args split\*.osm.pbf
+
+
+for Kazakhstan:
+
+java.exe -Xmx4000m -jar splitter\splitter.jar --output-dir=split --description=Kazakhstan --overlap=4000 --keep-complete=true --mapid=12350001 <filename>
+
+java.exe -Xmx4096m -jar mkgmap\mkgmap.jar --copyright-message="Copyright OpenStreetMap and contributors" --output-dir=map --route --index --split-name-index --location-autofill=is_in,nearest  --preserve-element-order --style-file=.\tstan  --add-pois-to-areas --link-pois-to-ways --nearby-poi-rules-config=.\tstan\duppoi --unicode --housenumbers --road-name-pois  --process-exits --process-destination --split-name-index --add-boundary-nodes-at-admin-boundaries=2 --housenumbers --poi-address  --bounds=bounds-latest.zip  --precomp-sea=sea-latest.zip --generate-sea --country-name="Kazakhstan" --family-id=1235 --family-name=Kazakhstan --series-name=Kazakhstan --area-name=Kazakhstan --gmapi --gmapsupp -c split\template.args split\*.osm.pbf
+
+8. A file named gmapsupp.img will appear in the folder .\Desktop\OSM\map. Copy it to your Garmin GPS navigator: a) format a microSD card in FAT32, b) create a folder named Garmin on the microSD card, c) copy gmapsupp.img to that folder. d) insert the microSD card in the GPS navigator's slot.
+9. If you have BaseCamp installed, you can also copy the *.gmap folder from the map folder to the .\Garmin\BaseCamp\Maps folder on your computer so you can see the map in BaseCamp.
+10. Once you have preserved the IMG file and the *.gmap folder, you may delete everything else in the map and split folders (and should before you run the program again).
+
+Your GPS now has a routable Garmin-compatible map of the area you downloaded.
+
+Some Garmin GPS navigators (but not all) allow addition of more than one IMG file to the microSD card. If yours does, you can rename one of the gmapsupp.img files to gmapsup1.img and have two IMG files on the microSD card that your GPS will recognize. Some later model Garmin GPS navigators allow addition of several IMG files that can be named almost anything. If your does, rename one IMG file "cenasia.img" and the other "kazakh.img" and copy both into the microSD card's Garmin folder.
+
+Some Garmin GPS navigators will automatically recognize the IMG file and load it. If yours does not, go into the settings, find My Maps, and check the box next to the new map.
+
+Glitches: mkgmap produces IMG files made of up multiple "tiles" (think of the map in the GPS as a pattern of tiles). Sometimes the GPS will have trouble routing you across the border between two tiles. When planning a long trip, you may have to enter a waypoint part of the way, then when you arrive at that waypoint, enter the next waypoint, and so on. That said, I have tested the Central Asia map produced with these instructions on my GPS in "GPS Simulator" mode and it successfully plotted a route from Ashgabat to Tashkent, although BaseCamp could not and only drew straight lines.
+
+OSM data are crowdsourced. That means that names can be misspelled, or available only in one language. Errors can creep in. Use the GPS as a navigational aid, not as a guru that knows all. Use it at your own risk. No guarantees are given for accuracy of the data. The data are copyright OpenStreetMap and contributors, please see https://www.openstreetmap.org/copyright
+
+
+
+
+
+
+
+

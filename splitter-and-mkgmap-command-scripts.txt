@@ -1,50 +1,69 @@
-These step-by-step instructions will allow you to create a routable map image (IMG) file compatible with Garmin GPS navigators from OpenStreetMap geospatial data, "the map of the world that anyone can use for free" (copyright OpenStreetMap and contributors, www.openstreetmap.org). 
+Please read this entire file.
+
+These step-by-step instructions will allow you to create a routable map image (IMG) file compatible with many Garmin GPS navigators from OpenStreetMap geospatial data, "the map of the world that anyone can use for free" (copyright OpenStreetMap and contributors, www.openstreetmap.org). 
 
 How to generate a custom routable Garmin-compatible map for your GPS navigator:
 
-Before starting, buy a microSD card if you don't already own one, for the microSD slot in your Garmin GPS. If you do not have an adapter for connecting a microSD card to a USB port on your computer, get one of those, too.
+Before starting, buy a microSD card if you don't already own one to insert in the microSD slot in your Garmin GPS. If you do not have an adapter for connecting a microSD card to a USB port on your computer, get one of those, too.
 
-1. plug the thumbdrive this document is on into a free USB port on your computer
-2. copy the OSM folder on this thumbdrive to your desktop (this will copy all the subfolders and files, too)
-3. download a PBF file containing the geospatial data you want from either https://extract.bbbike.org/ or https://download.geofabrik.de/ and place it in the OSM folder
-4. edit the Java scripts below so that <filename> is the same as what you downloaded (or rename the PBF file to something easy to type and replace <filename> with that. Both file names must end in .pbf)
-5. install Java on your computer if you do not already have it installed
-6. open the command line, and type in cd .\Desktop\OSM (on some Windows machines with OneDrive installed and running, this will be cd .\OneDrive\Desktop\OSM)
-7. copy and paste the first Java script below (splitter) to the command line and run it. When it finishes running, do the same with the second script (mkgmap) below.
+1. Plug the thumbdrive this document is on into a free USB port on your computer.
+2. Copy the OSM folder on this thumbdrive to your desktop (this will copy all the subfolders and files, too).
+3. Download a PBF file containing the geospatial data you want from either https://extract.bbbike.org/ or https://download.geofabrik.de/ and place it in the OSM folder. It MUST be in PBF format.
+4. Edit the Java scripts below so that <filename> is the same as what you downloaded (or rename the PBF file to something easy to type and replace <filename> with that. Both file names must end in .pbf).
+5. Install Java on your computer if you do not already have it installed (installer is in the program-downloads folder of this thumbdrive, or download from java.com).
+6. Open the command line, and type in cd .\Desktop\OSM (on some Windows machines with OneDrive installed and running, this will be cd .\OneDrive\Desktop\OSM).
+7. Edit the splitter script below to change the country name to the country or countries for which you are producing a map image. Change <filename> to the name of the PBF file you downloaded in step 3. 
+8. Copy and paste the Java scripts below (splitter and mkgmap) for one of the countries to the command line and run them one after the other, i.e., when splitter finishes running, run mkgmap. Each set of splitter and mkgmap scripts below generates a map of a different Central Asian country.
 
-(two separate routines are offered, one for the four Central Asian states without Kazakhstan, the other for Kazakhstan alone, because bbbike limits how large a download can be)
+N.B. The -Xmx parameter sets the maximum amount of memory the routine may use. The higher this number, the faster the program runs, but the number may not exceed available RAM on the computer. For example, if your computer has 32Gb of RAM, setting -Xmx16384m is appropriate. If your computer has only 16Gb of RAM, use a smaller number, perhaps Xmx8192m.
 
-for Central Asia except Kazakhstan:
+***> Change the file name ending in .osm.pbf to the file name you draw data from.
 
-java.exe -Xmx4000m -jar splitter\splitter.jar --output-dir=split --description=Central_Asia --overlap=4000 --keep-complete=true --mapid=12340001 <filename>
+java.exe -Xmx4000m -jar splitter\splitter.jar --output-dir=split --description=Kazakhstan --overlap=4000 --keep-complete=true --mapid=12340001 Kazakhstan-260921.osm.pbf
 
-java.exe -Xmx4096m -jar mkgmap\mkgmap.jar --copyright-message="Copyright OpenStreetMap and contributors" --output-dir=map --route --index --split-name-index --location-autofill=is_in,nearest  --preserve-element-order --style-file=.\tstan  --add-pois-to-areas --link-pois-to-ways --nearby-poi-rules-config=.\tstan\duppoi --unicode --housenumbers --road-name-pois  --process-exits --process-destination --split-name-index --add-boundary-nodes-at-admin-boundaries=2 --housenumbers --poi-address  --bounds=bounds-latest.zip  --precomp-sea=sea-latest.zip --generate-sea --country-name="Central_Asia" --family-id=1234 --family-name=Central_Asia --series-name=Central_Asia --area-name=Central_Asia --gmapi --gmapsupp -c split\template.args split\*.osm.pbf
+java.exe -Xmx16384m -jar mkgmap\mkgmap.jar --copyright-message="Copyright OpenStreetMap and contributors" --output-dir=map --route --index --split-name-index --location-autofill=is_in,nearest  --preserve-element-order --style-file=.\tstan  --add-pois-to-areas --link-pois-to-ways --nearby-poi-rules-config=.\tstan\duppoi  --unicode --housenumbers --road-name-pois  --process-exits --process-destination --split-name-index --add-boundary-nodes-at-admin-boundaries=2 --housenumbers --poi-address  --generate-sea=multipolygon  --country-name="Kazakhstan" --family-id=1234 --family-name=Kazakhstan --series-name=Central_Asia --area-name=Kazakhstan --gmapi --gmapsupp -c split\template.args split\*.osm.pbf
+
+----
+
+java.exe -Xmx4000m -jar splitter\splitter.jar --output-dir=split --description=Kyrgyzstan --overlap=4000 --keep-complete=true --mapid=12350001 Kyrgyzstan-260921.osm.pbf
+
+java.exe -Xmx16384m -jar mkgmap\mkgmap.jar --copyright-message="Copyright OpenStreetMap and contributors" --output-dir=map --route --index --split-name-index --location-autofill=is_in,nearest  --preserve-element-order --style-file=.\tstan  --add-pois-to-areas --link-pois-to-ways --nearby-poi-rules-config=.\tstan\duppoi  --unicode --housenumbers --road-name-pois  --process-exits --process-destination --split-name-index --add-boundary-nodes-at-admin-boundaries=2 --housenumbers --poi-address  --generate-sea=multipolygon --country-name="Kyrgyzstan" --family-id=1235 --family-name=Kyrgyzstan --series-name=Central_Asia --area-name=Kyrgyzstan --gmapi --gmapsupp -c split\template.args split\*.osm.pbf
+
+----
+
+java.exe -Xmx4000m -jar splitter\splitter.jar --output-dir=split --description=Tajikistan --overlap=4000 --keep-complete=true --mapid=12360001 Tajikistan-260921.osm.pbf
+
+java.exe -Xmx16384m -jar mkgmap\mkgmap.jar --copyright-message="Copyright OpenStreetMap and contributors" --output-dir=map --route --index --split-name-index --location-autofill=is_in,nearest  --preserve-element-order --style-file=.\tstan  --add-pois-to-areas --link-pois-to-ways --nearby-poi-rules-config=.\tstan\duppoi  --unicode --housenumbers --road-name-pois  --process-exits --process-destination --split-name-index --add-boundary-nodes-at-admin-boundaries=2 --housenumbers --poi-address  --generate-sea=multipolygon --country-name="Tajikistan" --family-id=1236 --family-name=Tajikistan --series-name=Central_Asia --area-name=Tajikistan --gmapi --gmapsupp -c split\template.args split\*.osm.pbf
+
+----
+
+java.exe -Xmx4000m -jar splitter\splitter.jar --output-dir=split --description=Turkmenistan --overlap=4000 --keep-complete=true --mapid=12370001 Turkmenistan-260921.osm.pbf
+
+java.exe -Xmx16384m -jar mkgmap\mkgmap.jar --copyright-message="Copyright OpenStreetMap and contributors" --output-dir=map --route --index --split-name-index --location-autofill=is_in,nearest  --preserve-element-order --style-file=.\tstan  --add-pois-to-areas --link-pois-to-ways --nearby-poi-rules-config=.\tstan\duppoi  --unicode --housenumbers --road-name-pois  --process-exits --process-destination --split-name-index --add-boundary-nodes-at-admin-boundaries=2 --housenumbers --poi-address  --generate-sea=multipolygon --country-name="Turkmenistan" --family-id=1237 --family-name=Turkmenistan --series-name=Central_Asia --area-name=Turkmenistan --gmapi --gmapsupp -c split\template.args split\*.osm.pbf
+
+----
+
+java.exe -Xmx4000m -jar splitter\splitter.jar --output-dir=split --description=Uzbekistan --overlap=4000 --keep-complete=true --mapid=12380001 Uzbekistan-260921.osm.pbf
+
+java.exe -Xmx16384m -jar mkgmap\mkgmap.jar --copyright-message="Copyright OpenStreetMap and contributors" --output-dir=map --route --index --split-name-index --location-autofill=is_in,nearest  --preserve-element-order --style-file=.\tstan  --add-pois-to-areas --link-pois-to-ways --nearby-poi-rules-config=.\tstan\duppoi  --unicode --housenumbers --road-name-pois  --process-exits --process-destination --split-name-index --add-boundary-nodes-at-admin-boundaries=2 --housenumbers --poi-address  --generate-sea=multipolygon --country-name="Uzbekistan" --family-id=1238 --family-name=Uzbekistan --series-name=Central_Asia --area-name=Uzbekistan --gmapi --gmapsupp -c split\template.args split\*.osm.pbf
 
 
-for Kazakhstan:
-
-java.exe -Xmx4000m -jar splitter\splitter.jar --output-dir=split --description=Kazakhstan --overlap=4000 --keep-complete=true --mapid=12350001 <filename>
-
-java.exe -Xmx4096m -jar mkgmap\mkgmap.jar --copyright-message="Copyright OpenStreetMap and contributors" --output-dir=map --route --index --split-name-index --location-autofill=is_in,nearest  --preserve-element-order --style-file=.\tstan  --add-pois-to-areas --link-pois-to-ways --nearby-poi-rules-config=.\tstan\duppoi --unicode --housenumbers --road-name-pois  --process-exits --process-destination --split-name-index --add-boundary-nodes-at-admin-boundaries=2 --housenumbers --poi-address  --bounds=bounds-latest.zip  --precomp-sea=sea-latest.zip --generate-sea --country-name="Kazakhstan" --family-id=1235 --family-name=Kazakhstan --series-name=Kazakhstan --area-name=Kazakhstan --gmapi --gmapsupp -c split\template.args split\*.osm.pbf
-
-8. A file named gmapsupp.img will appear in the folder .\Desktop\OSM\map. Copy it to your Garmin GPS navigator: a) format a microSD card in FAT32, b) create a folder named Garmin on the microSD card, c) copy gmapsupp.img to that folder. d) insert the microSD card in the GPS navigator's slot.
+8. A file named gmapsupp.img will appear in the folder .\Desktop\OSM\map. You may copy it to your Garmin GPS navigator: a) format a microSD card in FAT32, b) create a folder named Garmin on the microSD card, c) copy gmapsupp.img to that folder, d) insert the microSD card in the GPS navigator's slot. 
 9. If you have BaseCamp installed, you can also copy the *.gmap folder from the map folder to the .\Garmin\BaseCamp\Maps folder on your computer so you can see the map in BaseCamp.
-10. Once you have preserved the IMG file and the *.gmap folder, you may delete everything else in the map and split folders (and should before you run the program again).
+10. Once you have preserved the IMG file and the *.gmap folder, you may delete everything else in the map and split folders (and you should do this before you run the program again for another country).
 
 Your GPS now has a routable Garmin-compatible map of the area you downloaded.
 
-Some Garmin GPS navigators (but not all) allow addition of more than one IMG file to the microSD card. If yours does, you can rename one of the gmapsupp.img files to gmapsup1.img and have two IMG files on the microSD card that your GPS will recognize. Some later model Garmin GPS navigators allow addition of several IMG files that can be named almost anything. If your does, rename one IMG file "cenasia.img" and the other "kazakh.img" and copy both into the microSD card's Garmin folder.
+Some Garmin GPS navigators (but not all) allow addition of multiple IMG files to the microSD card. If yours does, you can rename the gmapsupp.img files to <country_name>.img and have multiple IMG files on the microSD card that your GPS will recognize. You can then go into Settings on the GPS and select which map(s) you want to use and deselect the others. This can be useful if your GPS doesn't have an abundance of memory.
 
-Some Garmin GPS navigators will automatically recognize the IMG file and load it. If yours does not, go into the settings, find My Maps, and check the box next to the new map.
+If your Garmin GPS navigator does not allow use of multiple IMG files and requires that the lone supplementary map file be named gmapsupp.img, you can merge multiple IMG files into a single file with GMapTool (https://www.gmaptool.eu).
 
-Glitches: mkgmap produces IMG files made of up multiple "tiles" (think of the map in the GPS as a pattern of tiles). Sometimes the GPS will have trouble routing you across the border between two tiles. When planning a long trip, you may have to enter a waypoint part of the way, then when you arrive at that waypoint, enter the next waypoint, and so on. That said, I have tested the Central Asia map produced with these instructions on my GPS in "GPS Simulator" mode and it successfully plotted a route from Ashgabat to Tashkent, although BaseCamp could not and only drew straight lines.
+Some Garmin GPS navigators will automatically recognize the IMG file and load it. If yours does not, go into Settings, find My Maps, and check the box next to the new map.
 
-OSM data are crowdsourced. That means that names can be misspelled, or available only in one language. Errors can creep in. Use the GPS as a navigational aid, not as a guru that knows all. Use it at your own risk. No guarantees are given for accuracy of the data. The data are copyright OpenStreetMap and contributors, please see https://www.openstreetmap.org/copyright
+Glitches: IMG files created with mkgmap are incompatible with some more recent models of Garmin GPS units, like the Drive series, that use the NTU ("new technology - Unicode") file format rather than the NT ("new technology") file format. Please read https://wiki.openstreetmap.org/wiki/Mkgmap/known_issues for further information. IMG files produced with mkgmap ARE compatible with Garmin nuvi automotive GPS units.
 
+mkgmap produces IMG files made up of multiple "tiles" (think of the map in the GPS as a pattern of tiles). Sometimes the GPS will have trouble routing you across the border between two tiles. When planning a long trip, you may have to enter a waypoint part of the way, then when you arrive at that waypoint, enter the next waypoint, and so on. 
 
+OSM data are crowdsourced. That means that names can be misspelled, or available only in one language or alphabet. Errors can creep in. Use the GPS as a navigational aid, not as a guru that knows all. Use it at your own risk. No guarantees are given for accuracy of the data. The data are copyright OpenStreetMap and contributors, please see https://www.openstreetmap.org/copyright. If you find errors in the map, feel free to create an OSM account and correct/update/augment the data yourself.
 
-
-
-
-
-
+Instructions updated 9/22/2026

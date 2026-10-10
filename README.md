@@ -3,6 +3,8 @@ personal mkgmap files
 These are files you can use to run mkgmap to produce IMG files covering Russia and Central Asia for a Garmin nuvi GPS navigators
 You still need to download mkgmap and splitter, the sea.zip and bounds.zip files, and data files, and install mkgmap and splitter.
 
+
+
 Useful URLs for information on mkgmap
 
 The mkgmap website

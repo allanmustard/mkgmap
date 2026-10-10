@@ -1,0 +1,44 @@
+Folder PATH listing
+
++---documents
++---IMG
++---map
+|   +---cen
+|   +---far
+|   +---kal
+|   +---nca
+|   +---nw
+|   +---sfd
+|   +---sib
+|   +---ura
+|   \---vlg
++---mkgmap
+|   +---doc
+|   +---examples
+|   |   +---chars
+|   |   |   \---ascii
+|   |   +---installer
+|   |   +---styles
+|   |   |   +---default
+|   |   |   |   \---inc
+|   |   |   \---noname
+|   |   \---typ-files
+|   \---lib
++---pbf
++---program-downloads
++---russia
+|   \---inc
++---split
+|   +---cen
+|   +---far
+|   +---kal
+|   +---nca
+|   +---nw
+|   +---sfd
+|   +---sib
+|   +---ura
+|   \---vlg
+\---splitter
+    +---doc
+    |   \---api
+    \---lib

@@ -1,0 +1,27 @@
+Folder PATH listing
+
++---documents
++---GMAP
++---map
++---mkgmap
+|   +---doc
+|   +---examples
+|   |   +---chars
+|   |   |   \---ascii
+|   |   +---installer
+|   |   +---styles
+|   |   |   +---default
+|   |   |   |   \---inc
+|   |   |   +---generic_new
+|   |   |   |   \---inc
+|   |   |   \---noname
+|   |   \---typ-files
+|   \---lib
++---program-downloads
++---split
++---splitter
+|   +---doc
+|   |   \---api
+|   \---lib
+\---tstan
+    \---inc

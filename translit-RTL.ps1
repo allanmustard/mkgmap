@@ -4,14 +4,18 @@ param(
     [Parameter(Mandatory=$true)]
     [string]$OutputFile,
     [int]$LinesPerChunk = 1000000,
-    [string]$LogFile = "translit_rtl_unmapped.log",
+    [string]$LogFile = "translit_unmapped.log",
     [switch]$AsciiOutput
 )
 
+# ----------------- ENCODING PROVIDER (PowerShell 7 fix) -----------------
 [System.Text.Encoding]::RegisterProvider([System.Text.CodePagesEncodingProvider]::Instance)
 
+# ----------------- START TIME -----------------
 $StartTime = Get-Date
-Write-Host "=== RTL Transliteration started at $StartTime ==="
+Write-Host "=== Transliteration started at $StartTime ==="
+
+# ----------------- MAPPING (ASCII-only source) -----------------
 
 # ----------------- TRANSLITERATION MAP -----------------
 
@@ -88,289 +92,271 @@ AddMap 0x0660 "0"; AddMap 0x0661 "1"; AddMap 0x0662 "2"; AddMap 0x0663 "3"
 AddMap 0x0664 "4"; AddMap 0x0665 "5"; AddMap 0x0666 "6"; AddMap 0x0667 "7"
 AddMap 0x0668 "8"; AddMap 0x0669 "9"
 
-# ----------------- CHUNK DIRECTORY -----------------
 
-$chunkDir = Join-Path (Split-Path $OutputFile -Parent) "chunks_rtl_tmp"
-if (Test-Path $chunkDir) { Remove-Item $chunkDir -Recurse -Force }
-New-Item -ItemType Directory -Path $chunkDir | Out-Null
+# ---------- HEBREW ----------
+# Simple consonantal transliteration
 
-# ----------------- SPLIT INTO CHUNKS -----------------
+AddMap 1488 "ʾ";  # א
+AddMap 1489 "b";  # ב
+AddMap 1490 "g";  # ג
+AddMap 1491 "d";  # ד
+AddMap 1492 "h";  # ה
+AddMap 1493 "v";  # ו
+AddMap 1494 "z";  # ז
+AddMap 1495 "ḥ";  # ח
+AddMap 1496 "ṭ";  # ט
+AddMap 1497 "y";  # י
+AddMap 1498 "k";  # ך
+AddMap 1499 "k";  # כ
+AddMap 1500 "l";  # ל
+AddMap 1501 "m";  # ם
+AddMap 1502 "m";  # מ
+AddMap 1503 "n";  # ן
+AddMap 1504 "n";  # נ
+AddMap 1505 "s";  # ס
+AddMap 1506 "ʿ";  # ע
+AddMap 1507 "p";  # ף
+AddMap 1508 "p";  # פ
+AddMap 1509 "ts"; # ץ
+AddMap 1510 "ts"; # צ
+AddMap 1511 "q";  # ק
+AddMap 1512 "r";  # ר
+AddMap 1513 "sh"; # ש
+AddMap 1514 "t";  # ת
 
-$chunkIndex = 0
-$lineCountInChunk = 0
-$buffer = New-Object System.Collections.Generic.List[string]
 
-Get-Content $InputFile -ReadCount 1 | ForEach-Object {
-    $buffer.Add($_)
-    $lineCountInChunk++
+# ----------------- TRANSLITERATION -----------------
 
-    if ($lineCountInChunk -ge $LinesPerChunk) {
-        $chunkIndex++
-        $chunkPath = Join-Path $chunkDir ("chunk_{0:D4}.txt" -f $chunkIndex)
-        [System.IO.File]::WriteAllLines($chunkPath, $buffer)
-        $buffer.Clear()
-        $lineCountInChunk = 0
+function TransliterateLine([string]$line, [hashtable]$localUnmapped) {
+    $len = $line.Length
+    $sb = New-Object System.Text.StringBuilder
+
+    for ($i = 0; $i -lt $len; $i++) {
+        $ch = $line[$i]
+
+        if ($map.ContainsKey($ch)) {
+            [void]$sb.Append($map[$ch])
+        }
+        else {
+            [void]$sb.Append($ch)
+
+            if (-not $localUnmapped.ContainsKey($ch)) {
+                $localUnmapped[$ch] = 1
+            }
+            else {
+                $localUnmapped[$ch]++
+            }
+        }
     }
+
+    $sb.ToString()
 }
 
-if ($buffer.Count -gt 0) {
-    $chunkIndex++
-    $chunkPath = Join-Path $chunkDir ("chunk_{0:D4}.txt" -f $chunkIndex)
-    [System.IO.File]::WriteAllLines($chunkPath, $buffer)
-    $buffer.Clear()
+function ContainsRTL {
+    param([string]$Text)
+
+    foreach ($ch in $Text.ToCharArray()) {
+
+        $code = [int]$ch
+
+        if (
+            ($code -ge 0x0590 -and $code -le 0x05FF) -or
+            ($code -ge 0x0600 -and $code -le 0x06FF) -or
+            ($code -ge 0x0750 -and $code -le 0x077F) -or
+            ($code -ge 0x08A0 -and $code -le 0x08FF)
+        ) {
+            return $true
+        }
+    }
+
+    return $false
 }
 
-$chunkCount = $chunkIndex
+function Convert-ToTitleCase {
+    param([string]$Text)
 
-# ----------------- PARALLEL PROCESSING -----------------
+    if ([string]::IsNullOrWhiteSpace($Text)) {
+        return $Text
+    }
 
-if (Test-Path $LogFile) { Remove-Item $LogFile -Force }
+    $culture = [System.Globalization.CultureInfo]::InvariantCulture
 
-$encodingName = if ($AsciiOutput) { "ASCII" } else { "UTF8" }
-$jobs = @()
+    return $culture.TextInfo.ToTitleCase(
+        $Text.ToLowerInvariant()
+    )
+}
 
-for ($i = 1; $i -le $chunkCount; $i++) {
+$reader = [System.IO.StreamReader]::new($InputFile)
 
-    $inChunk  = Join-Path $chunkDir ("chunk_{0:D4}.txt" -f $i)
-    $outChunk = Join-Path $chunkDir ("chunk_{0:D4}.out.txt" -f $i)
-    $logChunk = Join-Path $chunkDir ("chunk_{0:D4}.log.txt" -f $i)
+$writer = [System.IO.StreamWriter]::new(
+    $OutputFile,
+    $false,
+    [System.Text.Encoding]::UTF8
+)
 
-    $job = Start-Job -ScriptBlock {
-        param($inChunk, $outChunk, $logChunk, $encodingName, $map)
+$objectCount = 0
 
-        # ----------------- FUNCTIONS INSIDE JOB -----------------
+$currentObject = New-Object System.Collections.Generic.List[string]
 
-        function StripArabicDiacritics([string]$text) {
-            $sb = New-Object System.Text.StringBuilder
-            foreach ($ch in $text.ToCharArray()) {
-                $code = [int]$ch
-                if ($code -in 0x064B..0x065F) { continue }
-                [void]$sb.Append($ch)
-            }
-            return $sb.ToString()
+function Write-ObjectWithNameInt {
+    param(
+        [System.Collections.Generic.List[string]]$ObjectLines
+    )
+
+    $name = $null
+    $nameEn = $null
+    $nameInt = $null
+    $intName = $null
+
+    $nameLineIndex = -1
+
+    $hasNameEn = $false
+    $hasNameInt = $false
+
+    for ($i = 0; $i -lt $ObjectLines.Count; $i++) {
+
+        $line = $ObjectLines[$i]
+
+        if ($line -match '<tag k="name" v="([^"]*)"') {
+            $name = $matches[1]
+            $nameLineIndex = $i
         }
 
-        function IsRTLChar([char]$ch) {
-            $code = [int]$ch
-            if (($code -ge 0x0600 -and $code -le 0x06FF) -or
-                ($code -ge 0x0750 -and $code -le 0x077F) -or
-                ($code -ge 0x08A0 -and $code -le 0x08FF) -or
-                ($code -ge 0x0590 -and $code -le 0x05FF)) {
-                return $true
-            }
-            return $false
+        if ($line -match '<tag k="name:en" v="([^"]*)"') {
+            $nameEn = $matches[1]
+            $hasNameEn = $true
         }
 
-        function TransliterateWord([string]$word, [hashtable]$localUnmapped) {
-            $sb = New-Object System.Text.StringBuilder
-            foreach ($ch in $word.ToCharArray()) {
-                if ($map.ContainsKey($ch)) {
-                    [void]$sb.Append($map[$ch])
-                } else {
-                    [void]$sb.Append($ch)
-                    if (-not $localUnmapped.ContainsKey($ch)) {
-                        $localUnmapped[$ch] = 1
-                    } else {
-                        $localUnmapped[$ch]++
-                    }
-                }
-            }
-            return $sb.ToString()
+        if ($line -match '<tag k="name_int" v="([^"]*)"') {
+            $nameInt = $matches[1]
+            $hasNameInt = $true
         }
 
-        function ApplyAlHeuristicToWord([string]$word, [string]$originalWord) {
-            if ($originalWord.StartsWith("ال")) {
-                if ($word.Length -gt 2) {
-                    return "al-" + $word.Substring(2)
-                } else {
-                    return "al"
-                }
-            }
-            return $word
+        if ($line -match '<tag k="int_name" v="([^"]*)"') {
+            $intName = $matches[1]
         }
+    }
 
-        function ReconstructShortVowels([string]$word) {
-            $w = $word
-
-            # Fix impossible 3-consonant clusters (corrected regex)
-            $w = $w -replace "([bcdfghjklmnpqrstvwxyzḥḍṭẓṣʿ]{2})([bcdfghjklmnpqrstvwxyzḥḍṭẓṣʿ])", '$1a$2'
-
-            # Common verb pattern: ystghrb -> yastaghrib
-            $w = $w -replace "^yst", "yast"
-            $w = $w -replace "ghrb$", "ghrib"
-
-            # lḥẓ -> laḥẓa
-            if ($w -eq "lḥẓ") { $w = "laḥẓa" }
-
-            # wdʿ -> wadaʿ
-            if ($w -eq "wdʿ") { $w = "wadaʿ" }
-
-            # Final consonant -> add 'a'
-            if ($w -match "^[bcdfghjklmnpqrstvwxyzḥḍṭẓṣʿ]+$") {
-                $w = $w + "a"
-            }
-
-            return $w
-        }
-
-        function ReconstructDoubledConsonants([string]$word) {
-            $w = $word
-
-            $w = $w -replace "^tahdath", "tahaddath"
-            $w = $w -replace "muhbun", "muhibbun"
-            $w = $w -replace "muwadin", "muwaddin"
-
-            return $w
-        }
-
-        function TransliterateLineWordBased([string]$line, [hashtable]$localUnmapped) {
-            $parts = [System.Text.RegularExpressions.Regex]::Split($line, "(\s+)")
-            $result = New-Object System.Text.StringBuilder
-
-            for ($i = 0; $i -lt $parts.Length; $i++) {
-                $segment = $parts[$i]
-
-                if ($segment -match "^\s+$") {
-                    [void]$result.Append($segment)
-                    continue
-                }
-
-                $hasRTL = $false
-                foreach ($ch in $segment.ToCharArray()) {
-                    if (IsRTLChar $ch) { $hasRTL = $true; break }
-                }
-
-                if (-not $hasRTL) {
-                    [void]$result.Append($segment)
-                    continue
-                }
-
-                $words = $segment -split "\s+"
-                $latinWords = New-Object System.Collections.Generic.List[string]
-
-                foreach ($w in $words) {
-                    if ([string]::IsNullOrWhiteSpace($w)) { continue }
-
-                    $clean = StripArabicDiacritics $w
-                    $latin = TransliterateWord $clean $localUnmapped
-                    $latin = ApplyAlHeuristicToWord $latin $clean
-                    $latin = ReconstructShortVowels $latin
-                    $latin = ReconstructDoubledConsonants $latin
-
-                    $latinWords.Add($latin)
-                }
-
-                [array]::Reverse($latinWords)
-                $revSegment = [string]::Join(" ", $latinWords)
-
-                [void]$result.Append($revSegment)
-            }
-
-            return $result.ToString()
-        }
-
-        # ----------------- PROCESS CHUNK -----------------
-
+    #
+    # Generate name_int if needed
+    #
+    if (
+        $nameLineIndex -ge 0 -and
+        -not $hasNameEn -and
+        -not $hasNameInt -and
+        (ContainsRTL $name)
+    )
+    {
         $localUnmapped = @{}
-        $buf = New-Object System.Collections.Generic.List[string]
 
-        $enc = if ($encodingName -eq "ASCII") {
-            [System.Text.Encoding]::GetEncoding(20127)
-        } else {
-            [System.Text.Encoding]::GetEncoding(65001)
+        $nameInt = TransliterateLine $name $localUnmapped
+
+        $nameInt = Convert-ToTitleCase $nameInt
+
+        $insertLine =
+            '  <tag k="name_int" v="' +
+            [System.Security.SecurityElement]::Escape($nameInt) +
+            '"/>'
+
+        $ObjectLines.Insert(
+            $nameLineIndex + 1,
+            $insertLine
+        )
+
+        $hasNameInt = $true
+    }
+
+    #
+    # Select preferred international form
+    #
+    $intl = $null
+
+    if ($nameEn) {
+        $intl = $nameEn
+    }
+    elseif ($intName) {
+        $intl = $intName
+    }
+    elseif ($nameInt) {
+        $intl = $nameInt
+    }
+
+    #
+    # Build final Garmin display name
+    # RTL order: Local International
+    #
+    if (
+        $nameLineIndex -ge 0 -and
+        $name -and
+        $intl -and
+        $name.Trim() -ne "" -and
+        $intl.Trim() -ne "" -and
+        $name -ne $intl
+    )
+    {
+        if (
+            $name.IndexOf(
+                $intl,
+                [System.StringComparison]::OrdinalIgnoreCase
+            ) -lt 0
+        )
+        {
+            $newName = "$name $intl"
+
+            $ObjectLines[$nameLineIndex] =
+                '  <tag k="name" v="' +
+                [System.Security.SecurityElement]::Escape($newName) +
+                '"/>'
         }
+    }
 
-        if (-not (Test-Path $inChunk)) {
-            "" | Set-Content $outChunk -Encoding $encodingName
-            "" | Set-Content $logChunk -Encoding UTF8
-            return
-        }
+    foreach ($outLine in $ObjectLines) {
+        $writer.WriteLine($outLine)
+    }
+}
 
-        Get-Content $inChunk -ReadCount 1 | ForEach-Object {
+while (($line = $reader.ReadLine()) -ne $null)
+{
+    if ($line -match '^\s*<(node|way|relation)\b')
+    {
+        $currentObject.Clear()
+        $currentObject.Add($line)
 
-            $final = TransliterateLineWordBased $_ $localUnmapped
-            $buf.Add($final)
+        while (($line = $reader.ReadLine()) -ne $null)
+        {
+            $currentObject.Add($line)
 
-            if ($buf.Count -ge 10000) {
-                $sw = New-Object System.IO.StreamWriter($outChunk, $true, $enc)
-                foreach ($lineOut in $buf) { $sw.WriteLine($lineOut) }
-                $sw.Close()
-                $buf.Clear()
+            if ($line -match '^\s*</(node|way|relation)>')
+            {
+                break
             }
         }
 
-        if ($buf.Count -gt 0) {
-            $sw = New-Object System.IO.StreamWriter($outChunk, $true, $enc)
-            foreach ($lineOut in $buf) { $sw.WriteLine($lineOut) }
-            $sw.Close()
-            $buf.Clear()
-        }
+        Write-ObjectWithNameInt $currentObject
 
-        # ----------------- LOG UNMAPPED -----------------
+        $objectCount++
 
-        $entries = $localUnmapped.GetEnumerator() | Sort-Object Name
-        $logLines = New-Object System.Collections.Generic.List[string]
-        $logLines.Add("Chunk: $inChunk")
-        foreach ($e in $entries) {
-            $line = "Char: {0} (U+{1:X4}) Count: {2}" -f $e.Key, [int][char]$e.Key, $e.Value
-            $logLines.Add($line)
-        }
-        $logLines.Add("")
-        [System.IO.File]::WriteAllLines($logChunk, $logLines, [System.Text.Encoding]::UTF8)
-
-    } -ArgumentList $inChunk, $outChunk, $logChunk, $encodingName, $map
-
-    $jobs += $job
-}
-
-Wait-Job -Job $jobs | Out-Null
-Receive-Job -Job $jobs | Out-Null
-Remove-Job -Job $jobs
-Start-Sleep -Seconds 2
-
-# ----------------- MERGE OUTPUT -----------------
-
-if (Test-Path $OutputFile) { Remove-Item $OutputFile -Force }
-
-$finalEnc = if ($encodingName -eq "ASCII") {
-    [System.Text.Encoding]::GetEncoding(20127)
-} else {
-    [System.Text.Encoding]::GetEncoding(65001)
-}
-
-for ($i = 1; $i -le $chunkCount; $i++) {
-    $outChunk = Join-Path $chunkDir ("chunk_{0:D4}.out.txt" -f $i)
-
-    if (-not (Test-Path $outChunk)) {
-        "" | Set-Content $outChunk -Encoding $encodingName
-    }
-
-    $lines = Get-Content $outChunk -ReadCount 10000
-
-    $sw = New-Object System.IO.StreamWriter($OutputFile, $true, $finalEnc)
-    foreach ($batch in $lines) {
-        foreach ($line in $batch) {
-            $sw.WriteLine($line)
+        if (($objectCount % 100000) -eq 0)
+        {
+            Write-Host ("Processed {0:N0} objects" -f $objectCount)
         }
     }
-    $sw.Close()
-}
-
-# ----------------- MERGE LOGS -----------------
-
-"" | Set-Content $LogFile -Encoding UTF8
-
-for ($i = 1; $i -le $chunkCount; $i++) {
-    $logChunk = Join-Path $chunkDir ("chunk_{0:D4}.log.txt" -f $i)
-    if (Test-Path $logChunk) {
-        Get-Content $logChunk | Add-Content -Path $LogFile -Encoding UTF8
+        else
+    {
+        $writer.WriteLine($line)
     }
 }
 
-Remove-Item $chunkDir -Recurse -Force
+$writer.Close()
+$reader.Close()
 
 $EndTime = Get-Date
-Write-Host "=== RTL Transliteration finished at $EndTime ==="
+
+Write-Host "=== Name_int generation finished at $EndTime ==="
+
+$Duration = $EndTime - $StartTime
+
+Write-Host "=== Total runtime: $($Duration.ToString()) ==="
 
 $Duration = $EndTime - $StartTime
 Write-Host "=== Total runtime: $($Duration.ToString()) ==="

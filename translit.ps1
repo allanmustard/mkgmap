@@ -43,6 +43,25 @@ AddMap 1103 "ya"
 
 AddMap 1068 ""; AddMap 1100 ""; AddMap 1066 ""; AddMap 1098 ""
 
+# Ukrainian
+
+AddMap 1028 "Ye"   # Є
+AddMap 1108 "ye"   # є
+
+AddMap 1030 "I"    # І
+AddMap 1110 "i"    # і
+
+AddMap 1031 "Yi"   # Ї
+AddMap 1111 "yi"   # ї
+
+AddMap 1168 "G"    # Ґ
+AddMap 1169 "g"    # ґ
+
+# Belarusian
+
+AddMap 1038 "U"    # Ў
+AddMap 1118 "u"    # ў
+
 # Kazakh
 AddMap 1240 "A"; AddMap 1241 "a"
 AddMap 1170 "G"; AddMap 1171 "g"
@@ -78,195 +97,382 @@ AddMap 1186 "N"; AddMap 1187 "n"
 AddMap 1256 "O"; AddMap 1257 "o"
 AddMap 1198 "U"; AddMap 1199 "u"
 
+# ---------- AZERBAIJANI (Cyrillic) ----------
+# Roughly ISO-based, common Latin usage
+
+AddMap 1040 "A";  AddMap 1072 "a"
+AddMap 1041 "B";  AddMap 1073 "b"
+AddMap 1042 "V";  AddMap 1074 "v"
+AddMap 1043 "G";  AddMap 1075 "g"
+AddMap 1044 "D";  AddMap 1076 "d"
+AddMap 1045 "E";  AddMap 1077 "e"
+AddMap 1046 "Zh"; AddMap 1078 "zh"
+AddMap 1047 "Z";  AddMap 1079 "z"
+AddMap 1048 "I";  AddMap 1080 "i"
+AddMap 1049 "Y";  AddMap 1081 "y"
+AddMap 1050 "K";  AddMap 1082 "k"
+AddMap 1051 "L";  AddMap 1083 "l"
+AddMap 1052 "M";  AddMap 1084 "m"
+AddMap 1053 "N";  AddMap 1085 "n"
+AddMap 1054 "O";  AddMap 1086 "o"
+AddMap 1055 "P";  AddMap 1087 "p"
+AddMap 1056 "R";  AddMap 1088 "r"
+AddMap 1057 "S";  AddMap 1089 "s"
+AddMap 1058 "T";  AddMap 1090 "t"
+AddMap 1059 "U";  AddMap 1091 "u"
+AddMap 1060 "F";  AddMap 1092 "f"
+AddMap 1061 "Kh"; AddMap 1093 "kh"
+AddMap 1062 "Ts"; AddMap 1094 "ts"
+AddMap 1063 "Ch"; AddMap 1095 "ch"
+AddMap 1064 "Sh"; AddMap 1096 "sh"
+AddMap 1065 "Shch";AddMap 1097 "shch"
+AddMap 1066 "";   AddMap 1098 ""
+AddMap 1067 "Y";  AddMap 1099 "y"
+AddMap 1068 "";   AddMap 1100 ""
+AddMap 1069 "E";  AddMap 1101 "e"
+AddMap 1070 "Yu"; AddMap 1102 "yu"
+AddMap 1071 "Ya"; AddMap 1103 "ya"
+
+# Azerbaijani-specific Cyrillic letters
+AddMap 1240 "Ä";  AddMap 1241 "ä"   # Ә ә
+AddMap 1170 "G";  AddMap 1171 "g"   # Ғ ғ
+AddMap 1178 "Q";  AddMap 1179 "q"   # Қ қ
+AddMap 1198 "Ü";  AddMap 1199 "ü"   # Ү ү
+AddMap 1256 "Ö";  AddMap 1257 "ö"   # Ө ө
+
+# ----------------- AZERBAIJANI LATIN -> ASCII -----------------
+
+AddMap 304  "I"   # İ
+AddMap 305  "i"   # ı
+
+AddMap 214  "O"   # Ö
+AddMap 246  "o"   # ö
+
+AddMap 220  "U"   # Ü
+AddMap 252  "u"   # ü
+
+AddMap 199  "Ch"  # Ç
+AddMap 231  "ch"  # ç
+
+AddMap 350  "Sh"  # Ş
+AddMap 351  "sh"  # ş
+
+AddMap 286  "G"  # Ğ
+AddMap 287  "g"  # ğ
+
+AddMap 399  "E"   # Ə
+AddMap 601  "e"   # ə
+
+# ----------------- GEORGIAN (Mkhedruli) -----------------
+# ISO 9984 (standard scientific transliteration)
+
+AddMap 4304 "a"   # ა
+AddMap 4305 "b"   # ბ
+AddMap 4306 "g"   # გ
+AddMap 4307 "d"   # დ
+AddMap 4308 "e"   # ე
+AddMap 4309 "v"   # ვ
+AddMap 4310 "z"   # ზ
+AddMap 4311 "t"   # თ
+AddMap 4312 "i"   # ი
+AddMap 4313 "k"   # კ
+AddMap 4314 "l"   # ლ
+AddMap 4315 "m"   # მ
+AddMap 4316 "n"   # ნ
+AddMap 4317 "o"   # ო
+AddMap 4318 "p"   # პ
+AddMap 4319 "zh"  # ჟ
+AddMap 4320 "r"   # რ
+AddMap 4321 "s"   # ს
+AddMap 4322 "t"   # ტ
+AddMap 4323 "u"   # უ
+AddMap 4324 "p"   # ფ
+AddMap 4325 "k"   # ქ
+AddMap 4326 "gh"  # ღ
+AddMap 4327 "q"   # ყ
+AddMap 4328 "sh"  # შ
+AddMap 4329 "ch"  # ჩ
+AddMap 4330 "ts"  # ც
+AddMap 4331 "dz"  # ძ
+AddMap 4332 "ts"  # წ
+AddMap 4333 "ch"  # ჭ
+AddMap 4334 "kh"  # ხ
+AddMap 4335 "j"   # ჯ
+AddMap 4336 "h"   # ჰ
+
+# ----------------- ARMENIAN -----------------
+# ISO 9985 transliteration
+
+AddMap 1329 "A"; AddMap 1377 "a"   # Ա ա
+AddMap 1330 "B"; AddMap 1378 "b"   # Բ բ
+AddMap 1331 "G"; AddMap 1379 "g"   # Գ գ
+AddMap 1332 "D"; AddMap 1380 "d"   # Դ դ
+AddMap 1333 "E"; AddMap 1381 "e"   # Ե ե
+AddMap 1334 "Z"; AddMap 1382 "z"   # Զ զ
+AddMap 1335 "E"; AddMap 1383 "e"   # Է է
+AddMap 1336 "Y"; AddMap 1384 "y"   # Ը ը
+AddMap 1337 "T"; AddMap 1385 "t"   # Թ թ
+AddMap 1338 "Zh";AddMap 1386 "zh"  # Ժ ժ
+AddMap 1339 "I"; AddMap 1387 "i"   # Ի ի
+AddMap 1340 "L"; AddMap 1388 "l"   # Լ լ
+AddMap 1341 "Kh";AddMap 1389 "kh"  # Խ խ
+AddMap 1342 "Ts";AddMap 1390 "ts"  # Ծ ծ
+AddMap 1343 "K"; AddMap 1391 "k"   # Կ կ
+AddMap 1344 "H"; AddMap 1392 "h"   # Հ հ
+AddMap 1345 "Dz";AddMap 1393 "dz"  # Ձ ձ
+AddMap 1346 "Gh";AddMap 1394 "gh"  # Ղ ղ
+AddMap 1347 "T"; AddMap 1395 "t"   # Ճ ճ
+AddMap 1348 "M"; AddMap 1396 "m"   # Մ մ
+AddMap 1349 "Y"; AddMap 1397 "y"   # Յ յ
+AddMap 1350 "N"; AddMap 1398 "n"   # Ն ն
+AddMap 1351 "Sh";AddMap 1399 "sh"  # Շ շ
+AddMap 1352 "Vo";AddMap 1400 "vo"  # Ո ո
+AddMap 1353 "Ch";AddMap 1401 "ch"  # Չ չ
+AddMap 1354 "P"; AddMap 1402 "p"   # Պ պ
+AddMap 1355 "J"; AddMap 1403 "j"   # Ջ ջ
+AddMap 1356 "R"; AddMap 1404 "r"   # Ռ ռ
+AddMap 1357 "S"; AddMap 1405 "s"   # Ս ս
+AddMap 1358 "V"; AddMap 1406 "v"   # Վ վ
+AddMap 1359 "T"; AddMap 1407 "t"   # Տ տ
+AddMap 1360 "R"; AddMap 1408 "r"   # Ր ր
+AddMap 1361 "Ts";AddMap 1409 "ts"  # Ց ց
+AddMap 1362 "V"; AddMap 1410 "v"   # Ւ ւ
+AddMap 1363 "P"; AddMap 1411 "p"   # Փ փ
+AddMap 1364 "K"; AddMap 1412 "k"   # Ք ք
+AddMap 1365 "O"; AddMap 1413 "o"   # Օ օ
+AddMap 1366 "F"; AddMap 1414 "f"   # Ֆ ֆ
+
 # ----------------- TRANSLITERATION -----------------
 
 function TransliterateLine([string]$line, [hashtable]$localUnmapped) {
     $len = $line.Length
     $sb = New-Object System.Text.StringBuilder
+
     for ($i = 0; $i -lt $len; $i++) {
         $ch = $line[$i]
+
         if ($map.ContainsKey($ch)) {
             [void]$sb.Append($map[$ch])
-        } else {
+        }
+        else {
             [void]$sb.Append($ch)
+
             if (-not $localUnmapped.ContainsKey($ch)) {
                 $localUnmapped[$ch] = 1
-            } else {
+            }
+            else {
                 $localUnmapped[$ch]++
             }
         }
     }
+
     $sb.ToString()
 }
 
-# ----------------- CHUNK DIRECTORY -----------------
+function ContainsRTL {
+    param([string]$Text)
 
-$chunkDir = Join-Path (Split-Path $OutputFile -Parent) "chunks_tmp"
-if (Test-Path $chunkDir) { Remove-Item $chunkDir -Recurse -Force }
-New-Item -ItemType Directory -Path $chunkDir | Out-Null
+    foreach ($ch in $Text.ToCharArray()) {
 
-# ----------------- SPLIT INTO CHUNKS -----------------
+        $code = [int]$ch
 
-$chunkIndex = 0
-$lineCountInChunk = 0
-$buffer = New-Object System.Collections.Generic.List[string]
-
-Get-Content $InputFile -ReadCount 1 | ForEach-Object {
-    $buffer.Add($_)
-    $lineCountInChunk++
-
-    if ($lineCountInChunk -ge $LinesPerChunk) {
-        $chunkIndex++
-        $chunkPath = Join-Path $chunkDir ("chunk_{0:D4}.txt" -f $chunkIndex)
-        [System.IO.File]::WriteAllLines($chunkPath, $buffer)
-        $buffer.Clear()
-        $lineCountInChunk = 0
+        if (
+            ($code -ge 0x0590 -and $code -le 0x05FF) -or
+            ($code -ge 0x0600 -and $code -le 0x06FF) -or
+            ($code -ge 0x0750 -and $code -le 0x077F) -or
+            ($code -ge 0x08A0 -and $code -le 0x08FF)
+        ) {
+            return $true
+        }
     }
+
+    return $false
 }
 
-if ($buffer.Count -gt 0) {
-    $chunkIndex++
-    $chunkPath = Join-Path $chunkDir ("chunk_{0:D4}.txt" -f $chunkIndex)
-    [System.IO.File]::WriteAllLines($chunkPath, $buffer)
-    $buffer.Clear()
+function Convert-ToTitleCase {
+    param([string]$Text)
+
+    if ([string]::IsNullOrWhiteSpace($Text)) {
+        return $Text
+    }
+
+    $culture = [System.Globalization.CultureInfo]::InvariantCulture
+
+    return $culture.TextInfo.ToTitleCase(
+        $Text.ToLowerInvariant()
+    )
 }
 
-$chunkCount = $chunkIndex
+$reader = [System.IO.StreamReader]::new($InputFile)
 
-# ----------------- PARALLEL PROCESSING -----------------
+$writer = [System.IO.StreamWriter]::new(
+    $OutputFile,
+    $false,
+    [System.Text.Encoding]::UTF8
+)
 
-if (Test-Path $LogFile) { Remove-Item $LogFile -Force }
+$objectCount = 0
 
-$encodingName = if ($AsciiOutput) { "ASCII" } else { "UTF8" }
+$currentObject = New-Object System.Collections.Generic.List[string]
 
-$jobs = @()
+function Write-ObjectWithNameInt {
+    param(
+        [System.Collections.Generic.List[string]]$ObjectLines
+    )
 
-for ($i = 1; $i -le $chunkCount; $i++) {
-    $inChunk  = Join-Path $chunkDir ("chunk_{0:D4}.txt" -f $i)
-    $outChunk = Join-Path $chunkDir ("chunk_{0:D4}.out.txt" -f $i)
-    $logChunk = Join-Path $chunkDir ("chunk_{0:D4}.log.txt" -f $i)
+    $name = $null
+    $nameEn = $null
+    $nameInt = $null
+    $intName = $null
 
-    $job = Start-Job -ScriptBlock {
-        param($inChunk, $outChunk, $logChunk, $encodingName, $map)
+    $nameLineIndex = -1
 
+    $hasNameEn = $false
+    $hasNameInt = $false
+
+    for ($i = 0; $i -lt $ObjectLines.Count; $i++) {
+
+        $line = $ObjectLines[$i]
+
+        if ($line -match '<tag k="name" v="([^"]*)"') {
+            $name = $matches[1]
+            $nameLineIndex = $i
+        }
+
+        if ($line -match '<tag k="name:en" v="([^"]*)"') {
+            $nameEn = $matches[1]
+            $hasNameEn = $true
+        }
+
+        if ($line -match '<tag k="name_int" v="([^"]*)"') {
+            $nameInt = $matches[1]
+            $hasNameInt = $true
+        }
+
+        if ($line -match '<tag k="int_name" v="([^"]*)"') {
+            $intName = $matches[1]
+        }
+    }
+
+    #
+    # Generate name_int if needed
+    #
+    if (
+        $nameLineIndex -ge 0 -and
+        -not $hasNameEn -and
+        -not $hasNameInt -and
+        -not (ContainsRTL $name)
+    )
+    {
         $localUnmapped = @{}
-        $buf = New-Object System.Collections.Generic.List[string]
 
-        $enc = if ($encodingName -eq "ASCII") {
-            [System.Text.Encoding]::GetEncoding(20127)
-        } else {
-            [System.Text.Encoding]::GetEncoding(65001)
+        $nameInt = TransliterateLine $name $localUnmapped
+
+        $nameInt = Convert-ToTitleCase $nameInt
+
+        $insertLine =
+            '  <tag k="name_int" v="' +
+            [System.Security.SecurityElement]::Escape($nameInt) +
+            '"/>'
+
+        $ObjectLines.Insert(
+            $nameLineIndex + 1,
+            $insertLine
+        )
+
+        $hasNameInt = $true
+    }
+
+    #
+    # Select preferred international form
+    #
+    $intl = $null
+
+    if ($nameEn) {
+        $intl = $nameEn
+    }
+    elseif ($intName) {
+        $intl = $intName
+    }
+    elseif ($nameInt) {
+        $intl = $nameInt
+    }
+
+    #
+    # Build Garmin display name
+    #
+    if (
+        $nameLineIndex -ge 0 -and
+        $name -and
+        $intl -and
+        $name.Trim() -ne "" -and
+        $intl.Trim() -ne "" -and
+        $name -ne $intl
+    )
+    {
+        if (
+            $name.IndexOf(
+                $intl,
+                [System.StringComparison]::OrdinalIgnoreCase
+            ) -lt 0
+        )
+        {
+            $newName = "$intl $name"
+
+            $ObjectLines[$nameLineIndex] =
+                '  <tag k="name" v="' +
+                [System.Security.SecurityElement]::Escape($newName) +
+                '"/>'
         }
+    }
 
-        if (-not (Test-Path $inChunk)) {
-            "" | Set-Content $outChunk -Encoding $encodingName
-            "" | Set-Content $logChunk -Encoding UTF8
-            return
-        }
+    foreach ($outLine in $ObjectLines) {
+        $writer.WriteLine($outLine)
+    }
+}
 
-        Get-Content $inChunk -ReadCount 1 | ForEach-Object {
-            $line = $_
-            $len = $line.Length
-            $sb = New-Object System.Text.StringBuilder
-            for ($j = 0; $j -lt $len; $j++) {
-                $ch = $line[$j]
-                if ($map.ContainsKey($ch)) {
-                    [void]$sb.Append($map[$ch])
-                } else {
-                    [void]$sb.Append($ch)
-                    if (-not $localUnmapped.ContainsKey($ch)) {
-                        $localUnmapped[$ch] = 1
-                    } else {
-                        $localUnmapped[$ch]++
-                    }
-                }
+while (($line = $reader.ReadLine()) -ne $null)
+{
+    if ($line -match '^\s*<(node|way|relation)\b')
+    {
+        $currentObject.Clear()
+        $currentObject.Add($line)
+
+        while (($line = $reader.ReadLine()) -ne $null)
+        {
+            $currentObject.Add($line)
+
+            if ($line -match '^\s*</(node|way|relation)>')
+            {
+                break
             }
-            $buf.Add($sb.ToString())
-
-            if ($buf.Count -ge 10000) {
-                $sw = New-Object System.IO.StreamWriter($outChunk, $true, $enc)
-                foreach ($lineOut in $buf) { $sw.WriteLine($lineOut) }
-                $sw.Close()
-                $buf.Clear()
-            }
         }
 
-        if ($buf.Count -gt 0) {
-            $sw = New-Object System.IO.StreamWriter($outChunk, $true, $enc)
-            foreach ($lineOut in $buf) { $sw.WriteLine($lineOut) }
-            $sw.Close()
-            $buf.Clear()
-        }
+        Write-ObjectWithNameInt $currentObject
 
-        if (-not (Test-Path $outChunk)) {
-            "" | Set-Content $outChunk -Encoding $encodingName
-        }
+        $objectCount++
 
-        $entries = $localUnmapped.GetEnumerator() | Sort-Object Name
-        $logLines = New-Object System.Collections.Generic.List[string]
-        $logLines.Add("Chunk: $inChunk")
-        foreach ($e in $entries) {
-            $line = "Char: {0} (U+{1:X4}) Count: {2}" -f $e.Key, [int][char]$e.Key, $e.Value
-            $logLines.Add($line)
-        }
-        $logLines.Add("")
-        [System.IO.File]::WriteAllLines($logChunk, $logLines, [System.Text.Encoding]::UTF8)
-    } -ArgumentList $inChunk, $outChunk, $logChunk, $encodingName, $map
-
-    $jobs += $job
-}
-
-Wait-Job -Job $jobs | Out-Null
-Receive-Job -Job $jobs | Out-Null
-Remove-Job -Job $jobs
-
-Start-Sleep -Seconds 2
-
-# ----------------- MERGE OUTPUT (StreamWriter) -----------------
-
-if (Test-Path $OutputFile) { Remove-Item $OutputFile -Force }
-
-$finalEnc = if ($encodingName -eq "ASCII") {
-    [System.Text.Encoding]::GetEncoding(20127)
-} else {
-    [System.Text.Encoding]::GetEncoding(65001)
-}
-
-for ($i = 1; $i -le $chunkCount; $i++) {
-    $outChunk = Join-Path $chunkDir ("chunk_{0:D4}.out.txt" -f $i)
-
-    if (-not (Test-Path $outChunk)) {
-        Write-Host "WARNING: Missing output for chunk $i — creating empty placeholder."
-        "" | Set-Content $outChunk -Encoding $encodingName
-    }
-
-    $lines = Get-Content $outChunk -ReadCount 10000
-
-    $sw = New-Object System.IO.StreamWriter($OutputFile, $true, $finalEnc)
-    foreach ($batch in $lines) {
-        foreach ($line in $batch) {
-            $sw.WriteLine($line)
+        if (($objectCount % 100000) -eq 0)
+        {
+            Write-Host ("Processed {0:N0} objects" -f $objectCount)
         }
     }
-    $sw.Close()
-}
-
-# ----------------- MERGE LOGS -----------------
-
-"" | Set-Content $LogFile -Encoding UTF8
-
-for ($i = 1; $i -le $chunkCount; $i++) {
-    $logChunk = Join-Path $chunkDir ("chunk_{0:D4}.log.txt" -f $i)
-    if (Test-Path $logChunk) {
-        Get-Content $logChunk | Add-Content -Path $LogFile -Encoding UTF8
+    else
+    {
+        $writer.WriteLine($line)
     }
 }
 
-Remove-Item $chunkDir -Recurse -Force
+$writer.Close()
+$reader.Close()
 
-# ----------------- END TIME -----------------
 $EndTime = Get-Date
-Write-Host "=== Transliteration finished at $EndTime ==="
+
+Write-Host "=== Name_int generation finished at $EndTime ==="
+
+$Duration = $EndTime - $StartTime
+
+Write-Host "=== Total runtime: $($Duration.ToString()) ==="
 
 $Duration = $EndTime - $StartTime
 Write-Host "=== Total runtime: $($Duration.ToString()) ==="

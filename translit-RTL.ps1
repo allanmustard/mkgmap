@@ -128,10 +128,12 @@ AddMap 1514 "t";  # ת
 # ----------------- TRANSLITERATION -----------------
 
 function TransliterateLine([string]$line, [hashtable]$localUnmapped) {
+
     $len = $line.Length
     $sb = New-Object System.Text.StringBuilder
 
     for ($i = 0; $i -lt $len; $i++) {
+
         $ch = $line[$i]
 
         if ($map.ContainsKey($ch)) {
@@ -152,7 +154,25 @@ function TransliterateLine([string]$line, [hashtable]$localUnmapped) {
     $sb.ToString()
 }
 
+Add-Type -AssemblyName System.Web
+
+function EscapeXmlAttribute {
+
+    param([string]$Text)
+
+    if ($null -eq $Text) {
+        return ""
+    }
+
+    $Text = $Text.Replace("&", "&amp;")
+    $Text = $Text.Replace("<", "&lt;")
+    $Text = $Text.Replace(">", "&gt;")
+
+    return $Text
+}
+
 function ContainsRTL {
+
     param([string]$Text)
 
     foreach ($ch in $Text.ToCharArray()) {
@@ -173,6 +193,7 @@ function ContainsRTL {
 }
 
 function Convert-ToTitleCase {
+
     param([string]$Text)
 
     if ([string]::IsNullOrWhiteSpace($Text)) {
@@ -186,19 +207,8 @@ function Convert-ToTitleCase {
     )
 }
 
-$reader = [System.IO.StreamReader]::new($InputFile)
-
-$writer = [System.IO.StreamWriter]::new(
-    $OutputFile,
-    $false,
-    [System.Text.Encoding]::UTF8
-)
-
-$objectCount = 0
-
-$currentObject = New-Object System.Collections.Generic.List[string]
-
 function Write-ObjectWithNameInt {
+
     param(
         [System.Collections.Generic.List[string]]$ObjectLines
     )
@@ -218,28 +228,56 @@ function Write-ObjectWithNameInt {
         $line = $ObjectLines[$i]
 
         if ($line -match '<tag k="name" v="([^"]*)"') {
-            $name = $matches[1]
+
+            $name = [System.Web.HttpUtility]::HtmlDecode($matches[1])
+
+            $name = $name.Replace('"', '')
+            $name = $name.Replace([char]0x02BB,"'")
+            $name = $name.Replace([char]0x2018,"'")
+            $name = $name.Replace([char]0x2019,"'")
+
             $nameLineIndex = $i
         }
 
         if ($line -match '<tag k="name:en" v="([^"]*)"') {
-            $nameEn = $matches[1]
+
+            $nameEn = [System.Web.HttpUtility]::HtmlDecode($matches[1])
+
+            $nameEn = $nameEn.Replace('"', '')
+            $nameEn = $nameEn.Replace([char]0x02BB,"'")
+            $nameEn = $nameEn.Replace([char]0x2018,"'")
+            $nameEn = $nameEn.Replace([char]0x2019,"'")
+
             $hasNameEn = $true
         }
 
         if ($line -match '<tag k="name_int" v="([^"]*)"') {
-            $nameInt = $matches[1]
+
+            $nameInt = [System.Web.HttpUtility]::HtmlDecode($matches[1])
+
+            $nameInt = $nameInt.Replace('"', '')
+            $nameInt = $nameInt.Replace([char]0x02BB,"'")
+            $nameInt = $nameInt.Replace([char]0x2018,"'")
+            $nameInt = $nameInt.Replace([char]0x2019,"'")
+
             $hasNameInt = $true
         }
 
         if ($line -match '<tag k="int_name" v="([^"]*)"') {
-            $intName = $matches[1]
+
+            $intName = [System.Web.HttpUtility]::HtmlDecode($matches[1])
+
+            $intName = $intName.Replace('"', '')
+            $intName = $intName.Replace([char]0x02BB,"'")
+            $intName = $intName.Replace([char]0x2018,"'")
+            $intName = $intName.Replace([char]0x2019,"'")
         }
     }
 
     #
     # Generate name_int if needed
     #
+
     if (
         $nameLineIndex -ge 0 -and
         -not $hasNameEn -and
@@ -255,7 +293,7 @@ function Write-ObjectWithNameInt {
 
         $insertLine =
             '  <tag k="name_int" v="' +
-            [System.Security.SecurityElement]::Escape($nameInt) +
+            (EscapeXmlAttribute $nameInt) +
             '"/>'
 
         $ObjectLines.Insert(
@@ -269,6 +307,7 @@ function Write-ObjectWithNameInt {
     #
     # Select preferred international form
     #
+
     $intl = $null
 
     if ($nameEn) {
@@ -285,6 +324,7 @@ function Write-ObjectWithNameInt {
     # Build final Garmin display name
     # RTL order: Local International
     #
+
     if (
         $nameLineIndex -ge 0 -and
         $name -and
@@ -303,9 +343,11 @@ function Write-ObjectWithNameInt {
         {
             $newName = "$name $intl"
 
+            $escapedName = EscapeXmlAttribute $newName
+
             $ObjectLines[$nameLineIndex] =
                 '  <tag k="name" v="' +
-                [System.Security.SecurityElement]::Escape($newName) +
+                $escapedName +
                 '"/>'
         }
     }
@@ -314,6 +356,20 @@ function Write-ObjectWithNameInt {
         $writer.WriteLine($outLine)
     }
 }
+
+# =====================================================
+
+$reader = [System.IO.StreamReader]::new($InputFile)
+
+$writer = [System.IO.StreamWriter]::new(
+    $OutputFile,
+    $false,
+    [System.Text.Encoding]::UTF8
+)
+
+$objectCount = 0
+
+$currentObject = New-Object System.Collections.Generic.List[string]
 
 while (($line = $reader.ReadLine()) -ne $null)
 {
@@ -356,7 +412,4 @@ Write-Host "=== Name_int generation finished at $EndTime ==="
 
 $Duration = $EndTime - $StartTime
 
-Write-Host "=== Total runtime: $($Duration.ToString()) ==="
-
-$Duration = $EndTime - $StartTime
 Write-Host "=== Total runtime: $($Duration.ToString()) ==="
